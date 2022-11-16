@@ -1,16 +1,17 @@
-# Use the default kernel version if the Makefile doesn't override it
 
+# Use the default kernel version if the Makefile doesn't override it
 LINUX_RELEASE?=1
 
 ifdef CONFIG_TESTING_KERNEL
   KERNEL_PATCHVER:=$(KERNEL_TESTING_PATCHVER)
 endif
 
-LINUX_VERSION-5.4 = .224
-LINUX_VERSION-6.0 = .8
+KERNEL_DETAILS_FILE=$(INCLUDE_DIR)/kernel-$(KERNEL_PATCHVER)
+ifeq ($(wildcard $(KERNEL_DETAILS_FILE)),)
+  $(error Missing kernel version/hash file for $(KERNEL_PATCHVER). Please create $(KERNEL_DETAILS_FILE))
+endif
 
-LINUX_KERNEL_MD5SUM-5.4.224 = 730AFDA62199102307C50AC81155BEF2
-LINUX_KERNEL_MD5SUM-6.0.8 = A5DCC8133DC25FC6300051A00AF55134
+include $(KERNEL_DETAILS_FILE)
 
 remove_uri_prefix=$(subst git://,,$(subst http://,,$(subst https://,,$(1))))
 sanitize_uri=$(call qstrip,$(subst @,_,$(subst :,_,$(subst .,_,$(subst -,_,$(subst /,_,$(1)))))))
@@ -37,5 +38,5 @@ KERNEL=$(call merge_version,$(wordlist 1,2,$(call split_version,$(KERNEL_BASE)))
 KERNEL_PATCHVER ?= $(KERNEL)
 
 # disable the md5sum check for unknown kernel versions
-LINUX_KERNEL_MD5SUM:=$(LINUX_KERNEL_MD5SUM-$(strip $(LINUX_VERSION)))
-LINUX_KERNEL_MD5SUM?=x
+LINUX_KERNEL_HASH:=$(LINUX_KERNEL_HASH-$(strip $(LINUX_VERSION)))
+LINUX_KERNEL_HASH?=x
