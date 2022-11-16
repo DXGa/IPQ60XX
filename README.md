@@ -38,7 +38,7 @@ Tips:
 3. 下载源代码，更新 feeds 并选择配置
 
    ```bash
-   git clone -b main --single-branch https://github.com/Marsljh/IPQ60XX.git
+   git clone -b master --single-branch https://github.com/Marsljh/IPQ60XX.git
    cd IPQ60XX
    ./scripts/feeds update -a && ./scripts/feeds install -a
    make menuconfig
